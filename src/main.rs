@@ -7,6 +7,11 @@ fn print_board(board: [[char; 3]; 3]) {
     }
 }
 
+
+fn print_line(){
+    println!("-------------------------------------");
+}
+
 fn validate_board(board: [[char; 3]; 3]) -> char {
     for i in 0..3 {
         // Search game in rows
@@ -56,11 +61,12 @@ fn main() {
     'game: loop {
         for letter in ['X', 'O'] {
             loop {
+                print_line();
                 println!("Time for {letter} to play!");
                 print_board(board);
                 println!("Select a position to play (eg. a0))");
                 let mut guess = String::new();
-                io::stdin().read_line(&mut guess).expect("valor inválido");
+                io::stdin().read_line(&mut guess).expect("Error reading line.");
                 {
                     let column = &guess.chars().nth(0).unwrap();
                     let column: usize = match column {
@@ -68,13 +74,19 @@ fn main() {
                         'b' => 1,
                         'c' => 2,
                         _ => {
-                            println!("Coluna deve ser entre a, b e c somente");
+                            println!("Please pick a valid column");
                             continue;
                         }
                     };
 
                     let row = &guess.chars().nth(1).unwrap();
                     let row: usize = row.to_digit(10).unwrap() as usize;
+
+                    if row > 2{
+                        println!("Please insert a valid row.");
+                        continue;
+                    }
+
                     if write_on_board(&mut board, row, column, letter) {
                         break;
                     }
@@ -87,12 +99,12 @@ fn main() {
             }
         }
     }
-
+    print_line();
     print_board(board);
     match validation {
-        'v' => println!("Deu velha!"),
-        'X' => println!("X é o grande vencedor!"),
-        'O' => println!("O é o grande vencedor!"),
+        'v' => println!("It's a tie!"),
+        'X' => println!("X is the big winner!"),
+        'O' => println!("O is the big winner!"),
         _ => println!("Algo de errado não está certo!"),
     }
 }
